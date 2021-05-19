@@ -29,10 +29,8 @@ def main(corpus_dir, output_dir, log_level):
         level=log_level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
 
-    corpus_files = os.listdir(corpus_dir)
-    random.shuffle(corpus_files)
-
-    num_train = int(len(corpus_files) * 0.8)
+    corpus_files = [f for f in os.listdir(corpus_dir) if f.endswith('.txt')]
+    num_train = int(len(corpus_files) * 0.9)
     train_files = corpus_files[:num_train]
     test_files = corpus_files[num_train:]
 
@@ -44,6 +42,6 @@ def main(corpus_dir, output_dir, log_level):
 
     logging.info("Done!")
 
-    
+
 if __name__ == "__main__":
     main()
