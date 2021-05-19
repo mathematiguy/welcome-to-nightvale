@@ -57,7 +57,7 @@ def main(train_dir, output_dir, log_level):
     training_args = TrainingArguments(
         output_dir=output_dir,  # The output directory
         overwrite_output_dir=True,  # overwrite the content of the output directory
-        num_train_epochs=3,  # number of training epochs
+        num_train_epochs=20,  # number of training epochs
         per_device_train_batch_size=24,  # batch size for training
         per_device_eval_batch_size=32,  # batch size for evaluation
         eval_steps=400,  # Number of update steps between two evaluations.
