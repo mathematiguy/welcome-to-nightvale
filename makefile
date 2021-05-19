@@ -11,18 +11,26 @@ LOG_LEVEL ?= INFO
 
 .PHONY: docker docker-push docker-pull enter enter-root
 
+all: models/cecil_speaks/pytorch_model.bin
+
+generate: scripts/generate_text.py
+	$(RUN) python3 $<
+
 OUTPUT_DIR ?= models/cecil_speaks
-train: scripts/train.py
+train: models/cecil_speaks/pytorch_model.bin
+models/cecil_speaks/pytorch_model.bin: scripts/train.py data/train.txt
 	$(RUN) python3 $< --train_dir data --output_dir $(OUTPUT_DIR) --log_level $(LOG_LEVEL)
 
-split: scripts/train_split.py
+split: data/train.txt
+data/train.txt: scripts/train_split.py nightvale/.crawl.done
 	$(RUN) python3 $< --corpus_dir nightvale/corpus --output_dir data --log_level $(LOG_LEVEL)
 
-crawl:
-	$(RUN) bash -c 'cd nightvale && scrapy crawl transcripts -L $(LOG_LEVEL)'
+crawl: nightvale/.crawl.done
+nightvale/.crawl.done:
+	$(RUN) bash -c 'cd nightvale && scrapy crawl transcripts -L $(LOG_LEVEL)' && touch $@
 
 clean:
-	rm -f nightvale/transcripts.json nightvale/transcripts.txt
+	rm -rf nightvale/transcripts.json nightvale/transcripts.txt models/*
 
 docker:
 	docker build $(DOCKER_ARGS) --tag $(IMAGE):$(GIT_TAG) .
