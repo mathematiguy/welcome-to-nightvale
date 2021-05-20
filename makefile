@@ -20,9 +20,24 @@ generate: scripts/generate_text.py
 	$(RUN) python3 $<
 
 OUTPUT_DIR ?= models/$(MODEL_NAME)
+NUM_TRAIN_EPOCHS ?= 20
+PER_DEVICE_TRAIN_BATCH_SIZE ?= 24
+PER_DEVICE_EVAL_BATCH_SIZE ?= 32
+EVAL_STEPS ?= 400
+SAVE_STEPS ?= 800
+WARMUP_STEPS ?= 500
 train: models/$(MODEL_NAME)/pytorch_model.bin
 models/$(MODEL_NAME)/pytorch_model.bin: scripts/train.py data/train.txt
-	$(RUN) python3 $< --train_dir data --output_dir $(dir $@) --log_level $(LOG_LEVEL)
+	$(RUN) python3 $< \
+			--train_dir data \
+			--output_dir $(dir $@) \
+			--num_train_epochs $(NUM_TRAIN_EPOCHS) \
+			--per_device_train_batch_size $(PER_DEVICE_TRAIN_BATCH_SIZE) \
+			--per_device_eval_batch_size $(PER_DEVICE_EVAL_BATCH_SIZE) \
+			--eval_steps $(EVAL_STEPS) \
+			--save_steps $(SAVE_STEPS) \
+			--warmup_steps $(WARMUP_STEPS) \
+			--log_level $(LOG_LEVEL)
 
 split: data/train.txt
 data/train.txt: scripts/train_split.py nightvale/.crawl.done

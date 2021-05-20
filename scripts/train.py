@@ -28,8 +28,14 @@ def load_dataset(train_path, test_path, tokenizer):
 @click.command()
 @click.option("--train_dir", help="Path to save training files")
 @click.option("--output_dir", help="Path to save checkpoints")
+@click.option("--num_train_epochs", default=20, help="Number of training epochs")
+@click.option("--per_device_train_batch_size", default=24, help="Batch size for training")
+@click.option("--per_device_eval_batch_size", default=32, help="Batch size for evaluation")
+@click.option("--eval_steps", default=400, help="Batch size for evaluation")
+@click.option("--save_steps", default=800, help="Number of update steps between two evaluations")
+@click.option("--warmup_steps", default=500, help="After # of steps model is saved")
 @click.option("--log_level", default="INFO", help="Log level (default: INFO)")
-def main(train_dir, output_dir, log_level):
+def main(train_dir, output_dir, num_train_epochs, per_device_train_batch_size, per_device_eval_batch_size, eval_steps, save_steps, warmup_steps, log_level):
 
     # Set logger config
     logging.basicConfig(
@@ -59,12 +65,12 @@ def main(train_dir, output_dir, log_level):
     training_args = TrainingArguments(
         output_dir=output_dir,  # The output directory
         overwrite_output_dir=True,  # overwrite the content of the output directory
-        num_train_epochs=20,  # number of training epochs
-        per_device_train_batch_size=24,  # batch size for training
-        per_device_eval_batch_size=32,  # batch size for evaluation
-        eval_steps=400,  # Number of update steps between two evaluations.
-        save_steps=800,  # after # steps model is saved
-        warmup_steps=500,  # number of warmup steps for learning rate scheduler
+        num_train_epochs=num_train_epochs,  # number of training epochs
+        per_device_train_batch_size=per_device_train_batch_size,  # batch size for training
+        per_device_eval_batch_size=per_device_eval_batch_size,  # batch size for evaluation
+        eval_steps=eval_steps,  # Number of update steps between two evaluations.
+        save_steps=save_steps,  # after # steps model is saved
+        warmup_steps=warmup_steps,  # number of warmup steps for learning rate scheduler
         prediction_loss_only=True,
     )
 
