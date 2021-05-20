@@ -1,0 +1,10 @@
+welcome-to-nightvale:
+  env:
+    NUM_TRAIN_EPOCHS: 20
+    PER_DEVICE_TRAIN_BATCH_SIZE: 24
+    PER_DEVICE_EVAL_BATCH_SIZE: 32
+    EVAL_STEPS: 400
+    SAVE_STEPS: 800
+    WARMUP_STEPS: 500
+  memory: 16
+  cpus: 8
