@@ -134,3 +134,4 @@ nightvale/corpus/
 **/*.done
 models/
 credentials.yaml
+**/.#*
