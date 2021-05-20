@@ -1,9 +1,10 @@
 IMAGE_NAME := $(shell basename `git rev-parse --show-toplevel` | tr '[:upper:]' '[:lower:]')
 GIT_TAG ?= $(shell git log --oneline | head -n1 | awk '{print $$1}')
 DOCKER_REGISTRY := mathematiguy
-IMAGE := $(DOCKER_REGISTRY)/$(IMAGE_NAME)
+IMAGE := $(DOCKER_REGISTRY)/$(IMAGE_NAME)-$(COMPUTE)
 HAS_DOCKER ?= $(shell which docker)
-RUN ?= $(if $(HAS_DOCKER), docker run $(DOCKER_ARGS) --rm -v $$(pwd):/work -w /work -u $(UID):$(GID) $(IMAGE))
+COMPUTE ?= gpu
+RUN ?= $(if $(HAS_DOCKER), docker run $(DOCKER_ARGS) --gpus all --ipc host --rm -v $$(pwd):/work -w /work -u $(UID):$(GID) $(IMAGE))
 UID ?= $(shell id -u)
 GID ?= $(shell id -g)
 DOCKER_ARGS ?=
@@ -33,7 +34,7 @@ clean:
 	rm -rf nightvale/transcripts.json nightvale/transcripts.txt models/*
 
 docker:
-	docker build $(DOCKER_ARGS) --tag $(IMAGE):$(GIT_TAG) .
+	docker build $(DOCKER_ARGS) --tag $(IMAGE):$(GIT_TAG) -f Dockerfile.$(COMPUTE) .
 	docker tag $(IMAGE):$(GIT_TAG) $(IMAGE):latest
 
 docker-push:

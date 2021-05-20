@@ -1,13 +1,17 @@
-from transformers import pipeline
+from transformers import pipeline, GPT2Tokenizer, GPT2LMHeadModel
 
-chef = pipeline(
-    "text-generation",
-    model="models/cecil_speaks",
-    tokenizer="gpt2",
-    config={"max_length": 0},
-)
+tokenizer = GPT2Tokenizer.from_pretrained("gpt2-large")
+model = GPT2LMHeadModel.from_pretrained("models/cecil_speaks", local_files_only=True)
 
-text = "166 - "
-result = chef(text)[0]["generated_text"]
+sentence = "Welcome to Night Vale"
+input_ids = tokenizer.encode(sentence, return_tensors='pt')
 
-print(result)
+output = model.generate(
+    input_ids,
+    do_sample=True,
+    max_length=2000,
+    top_k=0,
+    top_p=0.92,
+    temperature=0.9)
+
+print(tokenizer.decode(output[0], skip_special_tokens=True))

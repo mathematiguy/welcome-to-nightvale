@@ -1,3 +1,4 @@
 scrapy
 transformers[torch]
 huggingface
+ipython

@@ -1,0 +1,3 @@
+docker: mathematiguy/welcome-to-nightvale-cpu:3af0efa
+cpus: 4
+memory: 16
