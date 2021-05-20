@@ -47,6 +47,8 @@ def main(train_dir, output_dir, log_level):
     # Load the dataset
     train_path = os.path.join(train_dir, "train.txt")
     test_path = os.path.join(train_dir, "test.txt")
+    assert os.path.exists(train_path) and os.path.exists(test_path), \
+        f"one of {train_path} or {test_path} are missing!"
     logging.info("Loading the dataset...")
     train_dataset, test_dataset, data_collator = load_dataset(
         train_path, test_path, tokenizer

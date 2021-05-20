@@ -1,9 +1,9 @@
 IMAGE_NAME := $(shell basename `git rev-parse --show-toplevel` | tr '[:upper:]' '[:lower:]')
 GIT_TAG ?= $(shell git log --oneline | head -n1 | awk '{print $$1}')
 DOCKER_REGISTRY := mathematiguy
+COMPUTE ?= gpu
 IMAGE := $(DOCKER_REGISTRY)/$(IMAGE_NAME)-$(COMPUTE)
 HAS_DOCKER ?= $(shell which docker)
-COMPUTE ?= gpu
 RUN ?= $(if $(HAS_DOCKER), docker run $(DOCKER_ARGS) --gpus all --ipc host --rm -v $$(pwd):/work -w /work -u $(UID):$(GID) $(IMAGE))
 UID ?= $(shell id -u)
 GID ?= $(shell id -g)
@@ -12,15 +12,17 @@ LOG_LEVEL ?= INFO
 
 .PHONY: docker docker-push docker-pull enter enter-root
 
-all: models/cecil_speaks/pytorch_model.bin
+MODEL_NAME ?= cecil_speaks
+
+all: models/$(MODEL_NAME)/pytorch_model.bin
 
 generate: scripts/generate_text.py
 	$(RUN) python3 $<
 
-OUTPUT_DIR ?= models/cecil_speaks
-train: models/cecil_speaks/pytorch_model.bin
-models/cecil_speaks/pytorch_model.bin: scripts/train.py data/train.txt
-	$(RUN) python3 $< --train_dir data --output_dir $(OUTPUT_DIR) --log_level $(LOG_LEVEL)
+OUTPUT_DIR ?= models/$(MODEL_NAME)
+train: models/$(MODEL_NAME)/pytorch_model.bin
+models/$(MODEL_NAME)/pytorch_model.bin: scripts/train.py data/train.txt
+	$(RUN) python3 $< --train_dir data --output_dir $(dir $@) --log_level $(LOG_LEVEL)
 
 split: data/train.txt
 data/train.txt: scripts/train_split.py nightvale/.crawl.done
