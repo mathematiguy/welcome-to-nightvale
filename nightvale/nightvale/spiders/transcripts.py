@@ -19,7 +19,7 @@ class TranscriptsSpider(scrapy.Spider):
         )
 
         # Write file to disk
-        corpus_file = os.path.join(self.corpus_dir, response.url.rsplit('/', 1)[-1])
+        corpus_file = os.path.join(self.corpus_dir, response.url.rsplit('/', 1)[-1]) + '.txt'
         with open(corpus_file, 'w') as f:
             f.write(title + '\n\n' + transcript)
 
