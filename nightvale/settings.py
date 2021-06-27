@@ -12,6 +12,7 @@ BOT_NAME = 'nightvale'
 SPIDER_MODULES = ['nightvale.spiders']
 NEWSPIDER_MODULE = 'nightvale.spiders'
 
+LOG_LEVEL = 'DEBUG'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'nightvale (+http://www.yourdomain.com)'

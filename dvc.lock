@@ -1,0 +1,31 @@
+schema: '2.0'
+stages:
+  crawl:
+    cmd: "mkdir corpus && scrapy crawl transcripts\n"
+    deps:
+    - path: nightvale/settings.py
+      md5: 017fa1c0afceb6ee46d819d99e4b0433
+      size: 3199
+    - path: nightvale/spiders/transcripts.py
+      md5: 6256d68b5233bbe22dfc2ad52dbf410d
+      size: 1127
+    outs:
+    - path: corpus
+      md5: 5bf1bcb0b4b58bdc83da561e8ef18cea.dir
+      size: 2685604
+      nfiles: 191
+  split:
+    cmd: "python scripts/train_split.py --corpus_dir corpus --output_dir data --log_level\
+      \ INFO\n"
+    deps:
+    - path: corpus
+      md5: 5bf1bcb0b4b58bdc83da561e8ef18cea.dir
+      size: 2685604
+      nfiles: 191
+    - path: scripts/train_split.py
+      md5: 9c2e07e2901337234de3f25dae73dc34
+      size: 1366
+    outs:
+    - path: data/train.txt
+      md5: 73bb5c182dd852f0460f812bcbdab2b6
+      size: 2412586

@@ -19,9 +19,9 @@ class TranscriptsSpider(scrapy.Spider):
         )
 
         # Write file to disk
-        corpus_file = os.path.join(self.corpus_dir, response.url.rsplit('/', 1)[-1]) + '.txt'
-        with open(corpus_file, 'w') as f:
-            f.write(title + '\n\n' + transcript)
+        corpus_file = self.corpus_dir + '/' + response.url.rsplit('/', 1)[-1] + '.txt'
+        with open(corpus_file, 'wb') as f:
+            f.write((title + '\n\n' + transcript).encode('ascii', errors='ignore'))
 
         # Get the url to the next page
         next_page = response.xpath('//a[@id="nextLink"]/@href').extract()

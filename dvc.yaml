@@ -1,0 +1,25 @@
+stages:
+  crawl:
+    deps:
+      - nightvale/spiders/transcripts.py
+      - nightvale/settings.py
+    cmd: |
+      mkdir corpus && scrapy crawl transcripts
+    outs:
+      - corpus
+  split:
+    deps:
+      - scripts/train_split.py
+      - corpus
+    cmd: |
+      python scripts/train_split.py --corpus_dir corpus --output_dir data --log_level ${log_level}
+    outs:
+      - data/train.txt
+  train:
+    deps:
+      - scripts/train.py
+      - data/train.txt
+    cmd: |
+      python scripts/train.py --train_dir data --output_dir models/${train.model_name} --num_train_epochs ${train.num_train_epochs} --per_device_train_batch_size ${train.per_device_train_batch_size} --per_device_eval_batch_size ${train.per_device_eval_batch_size} --eval_steps ${train.eval_steps} --save_steps ${train.save_steps} --warmup_steps ${train.warmup_steps} --log_level ${log_level}
+    outs:
+      - models/${train.model_name}/pytorch_model.bin
